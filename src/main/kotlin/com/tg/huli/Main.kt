@@ -304,7 +304,7 @@ fun downloadGraph(url: String, stringBuilder: StringBuilder, hasCover: Boolean):
     stringBuilder.append(dir.name)
 
     var i = 0
-    var urlPic = ""
+    var urlPic: String
 
     println("Start Download...")
     if (!tryCatch {
