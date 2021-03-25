@@ -223,8 +223,8 @@ fun fetchJarPath(): String {
         path = path.substring(1, path.length)
     }
     if (path.contains("jar")) {
-        path = path.substring(0, path.lastIndexOf("."));
-        return path.substring(0, path.lastIndexOf("/"));
+        path = path.substring(0, path.lastIndexOf("."))
+        return path.substring(0, path.lastIndexOf("/"))
     }
     return path.replace("target/classes/", "")
 }
