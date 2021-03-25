@@ -12,7 +12,8 @@ const val FILE_CONFIG = "server.config"
 const val FILE_TOKEN = "token"
 const val FILE_MASTER = "master"
 const val FILE_TARGET_DIR = "target_dir"
-const val FILE_ARIA_TOKEN = "aria"
+const val FILE_ARIA_TOKEN = "aria_token"
+const val FILE_ARIA_URL = "aria_url"
 
 const val FILE_CHAT_ID = "chat_id"
 
@@ -29,6 +30,7 @@ var masterId = -1
 var targetDir = ""
 
 var ariaToken = ""
+var ariaURL = ""
 
 fun main(args: Array<String>) {
 
@@ -165,7 +167,7 @@ fun main(args: Array<String>) {
 
                         }
                         COMMAND_ARIA_DOWNLOAD -> {
-
+                            sendMsg(url, userId, if (ariaDownload(list[2], stringBuilder)) "Aria2 added: $stringBuilder" else "Aria2 add failed")
                         }
                         else -> sendMsg(url, userId, "Unknown command")
                     }
@@ -242,6 +244,7 @@ fun loadDataFromFile(): Boolean {
             FILE_TARGET_DIR -> targetDir = line.substring(line.indexOf('=') + 1)
             FILE_MASTER -> masterId = line.substring(line.indexOf('=') + 1).toInt()
             FILE_ARIA_TOKEN -> ariaToken = line.substring(line.indexOf('=') + 1)
+            FILE_ARIA_URL -> ariaURL = line.substring(line.indexOf('=') + 1)
             else -> continue
         }
     }
@@ -332,10 +335,14 @@ fun downloadGraph(url: String, stringBuilder: StringBuilder, hasCover: Boolean):
     return true
 }
 
-fun ariaDownload() {
-
-
-
+fun ariaDownload(url: String, stringBuilder: StringBuilder) = tryCatch {
+    stringBuilder.clear()
+    stringBuilder.append(
+        Aria2Json.builder()
+            .setURL(url)
+            .setToken(ariaToken)
+            .send(ariaURL)
+    )
 }
 
 fun decodeCommand(string: String) = arrayListOf<String>().apply {
