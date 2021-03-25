@@ -8,11 +8,13 @@ import java.io.File
 import java.net.URL
 import kotlin.text.StringBuilder
 
+const val FILE_CONFIG = "server.config"
 const val FILE_TOKEN = "token"
-const val FILE_CHAT_ID = "chat_id"
 const val FILE_MASTER = "master"
 const val FILE_TARGET_DIR = "target_dir"
 const val FILE_ARIA_TOKEN = "aria"
+
+const val FILE_CHAT_ID = "chat_id"
 
 const val COMMAND_TELEGRAPH = "/telegraph"
 const val COMMAND_ARIA = "/aria"
@@ -228,24 +230,26 @@ fun fetchJarPath(): String {
 }
 
 fun loadDataFromFile(): Boolean {
-    File(jarPath, FILE_TOKEN).apply {
-        if (!exists()) {
-            return false
-        }
-        token = readText()
-    }
     File(jarPath, FILE_CHAT_ID).apply {
         if (exists()) {
             historyChatId = readText()
         }
     }
-    File(jarPath, FILE_MASTER).apply {
-        if (!exists()) {
-            return false
+
+    for (line in File(jarPath, FILE_CONFIG).readLines()) {
+        when (line.substring(line.indexOf('='))) {
+            FILE_TOKEN -> token = line.substring(line.indexOf('=') + 1)
+            FILE_TARGET_DIR -> targetDir = line.substring(line.indexOf('=') + 1)
+            FILE_MASTER -> masterId = line.substring(line.indexOf('=') + 1).toInt()
+            FILE_ARIA_TOKEN -> ariaToken = line.substring(line.indexOf('=') + 1)
+            else -> continue
         }
-        masterId = readText().toInt()
     }
-    File(jarPath, FILE_TARGET_DIR)
+
+    if (token.isEmpty() || masterId == -1) {
+        return false
+    }
+
     return true
 }
 
