@@ -60,7 +60,6 @@ fun main(args: Array<String>) {
 
     var msg = ""
 
-    var lastChatId = ""
     var chatId = ""
     var userId = 0
 
@@ -78,7 +77,7 @@ fun main(args: Array<String>) {
     while (true) {
         tryOnly { Thread.sleep(1000) }
 
-        if (!tryCatch { tryCatch { msg = getUpdates(url, lastChatId) } } || msg.isEmpty()) {
+        if (!tryCatch { tryCatch { msg = getUpdates(url, historyChatId) } } || msg.isEmpty()) {
             continue
         }
 
@@ -113,7 +112,7 @@ fun main(args: Array<String>) {
         for (jsonElement in results) {
             var jsonMessage = jsonElement.asJsonObject
 
-            if (!tryCatch { chatId = jsonMessage.get("update_id").asString } || chatId.isEmpty() || chatId == lastChatId) {
+            if (!tryCatch { chatId = jsonMessage.get("update_id").asString } || chatId.isEmpty() || chatId == historyChatId) {
                 println("Updates skipped")
                 continue
             }
@@ -121,7 +120,7 @@ fun main(args: Array<String>) {
             println("ChatId: $chatId")
 
             // update chat id
-            lastChatId = chatId
+            historyChatId = chatId
 
             // Can't get message object
             if (!tryCatch { jsonMessage = jsonMessage.get("message").asJsonObject }) {
@@ -180,7 +179,7 @@ fun main(args: Array<String>) {
 
         }
 
-        chatIdFile.writeText(lastChatId)
+        chatIdFile.writeText(historyChatId)
 
     }
 
