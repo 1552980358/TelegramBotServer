@@ -2,6 +2,7 @@ package com.tg.huli
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tg.huli.Utils.Companion.fetchJarPath
 import lib.github1552980358.ktExtension.jvm.keyword.tryCatch
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import java.io.File
@@ -33,6 +34,8 @@ var ariaToken = ""
 var ariaURL = ""
 
 fun main(args: Array<String>) {
+
+    println("Jar location: $jarPath")
 
     if (args.size == 1 && args[0] == "init") {
         initialize()
@@ -185,18 +188,20 @@ fun main(args: Array<String>) {
 
 fun initialize() {
     println("Initialize start")
-    print("Paste token: ")
-    System.`in`.bufferedReader().use { bufferedReader ->
-        File(jarPath, FILE_TOKEN).writeText(bufferedReader.readText())
+
+    File(jarPath, FILE_CONFIG).apply {
+        if (exists()) {
+            delete()
+        }
+        createNewFile()
+        print("Paste token: ")
+        appendText("$FILE_TOKEN=" + System.`in`.bufferedReader().readLine() + '\n')
+        print("Input master id: ")
+        appendText("$FILE_MASTER=" +System.`in`.bufferedReader().readLine() + '\n')
+        print("Input target directory: ")
+        appendText("$FILE_TARGET_DIR=" +System.`in`.bufferedReader().readLine() + '\n')
     }
-    print("Input master id: ")
-    System.`in`.bufferedReader().use { bufferedReader ->
-        File(jarPath, FILE_MASTER).writeText(bufferedReader.readText())
-    }
-    print("Input target directory: ")
-    System.`in`.bufferedReader().use { bufferedReader ->
-        File(jarPath, FILE_TARGET_DIR).writeText(bufferedReader.readText())
-    }
+
     println("  Initialize done  ")
     println("===================")
     println()
@@ -219,18 +224,6 @@ fun getDataLoaded(args: Array<String>): Boolean {
     else loadDataFromArgs(args)
 }
 
-fun fetchJarPath(): String {
-    var path = String::class.java.protectionDomain.codeSource.location.path
-    if (System.getProperty("os.name").contains("dows")) {
-        path = path.substring(1, path.length)
-    }
-    if (path.contains("jar")) {
-        path = path.substring(0, path.lastIndexOf("."))
-        return path.substring(0, path.lastIndexOf("/"))
-    }
-    return path.replace("target/classes/", "")
-}
-
 fun loadDataFromFile(): Boolean {
     File(jarPath, FILE_CHAT_ID).apply {
         if (exists()) {
@@ -238,14 +231,16 @@ fun loadDataFromFile(): Boolean {
         }
     }
 
-    for (line in File(jarPath, FILE_CONFIG).readLines()) {
-        when (line.substring(line.indexOf('='))) {
-            FILE_TOKEN -> token = line.substring(line.indexOf('=') + 1)
-            FILE_TARGET_DIR -> targetDir = line.substring(line.indexOf('=') + 1)
-            FILE_MASTER -> masterId = line.substring(line.indexOf('=') + 1).toInt()
-            FILE_ARIA_TOKEN -> ariaToken = line.substring(line.indexOf('=') + 1)
-            FILE_ARIA_URL -> ariaURL = line.substring(line.indexOf('=') + 1)
-            else -> continue
+    File(jarPath, FILE_CONFIG).readLines().apply {
+        for (line in this) {
+            when (line.substring(0, line.indexOf('='))) {
+                FILE_TOKEN -> token = line.substring(line.indexOf('=') + 1)
+                FILE_TARGET_DIR -> targetDir = line.substring(line.indexOf('=') + 1)
+                FILE_MASTER -> masterId = line.substring(line.indexOf('=') + 1).toInt()
+                FILE_ARIA_TOKEN -> ariaToken = line.substring(line.indexOf('=') + 1)
+                FILE_ARIA_URL -> ariaURL = line.substring(line.indexOf('=') + 1)
+                else -> continue
+            }
         }
     }
 
