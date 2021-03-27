@@ -53,6 +53,8 @@ fun main(args: Array<String>) {
     println(" MasterID: $masterId")
     println(" Target Directory: $targetDir")
     println(" Jar Directory: $jarPath")
+    println(" Aria Token: $ariaToken")
+    println(" Aria URL: $ariaURL")
     println("=================================")
     println()
 
