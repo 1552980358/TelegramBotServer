@@ -201,6 +201,10 @@ fun initialize() {
         appendText("$FILE_MASTER=" +System.`in`.bufferedReader().readLine() + '\n')
         print("Input target directory: ")
         appendText("$FILE_TARGET_DIR=" +System.`in`.bufferedReader().readLine() + '\n')
+        print("Aria token:")
+        appendText("$FILE_ARIA_TOKEN=" +System.`in`.bufferedReader().readLine() + '\n')
+        print("Aria URL:")
+        appendText("$FILE_ARIA_URL=" +System.`in`.bufferedReader().readLine() + '\n')
     }
 
     println("  Initialize done  ")
