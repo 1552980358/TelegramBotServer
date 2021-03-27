@@ -236,15 +236,20 @@ fun loadDataFromFile(): Boolean {
         }
     }
 
-    File(jarPath, FILE_CONFIG).readLines().apply {
-        for (line in this) {
-            when (line.substring(0, line.indexOf('='))) {
-                FILE_TOKEN -> token = line.substring(line.indexOf('=') + 1)
-                FILE_TARGET_DIR -> targetDir = line.substring(line.indexOf('=') + 1)
-                FILE_MASTER -> masterId = line.substring(line.indexOf('=') + 1).toInt()
-                FILE_ARIA_TOKEN -> ariaToken = line.substring(line.indexOf('=') + 1)
-                FILE_ARIA_URL -> ariaURL = line.substring(line.indexOf('=') + 1)
-                else -> continue
+    File(jarPath, FILE_CONFIG).also { file ->
+        if (!file.exists()) {
+            return false
+        }
+        file.readLines().apply {
+            for (line in this) {
+                when (line.substring(0, line.indexOf('='))) {
+                    FILE_TOKEN -> token = line.substring(line.indexOf('=') + 1)
+                    FILE_TARGET_DIR -> targetDir = line.substring(line.indexOf('=') + 1)
+                    FILE_MASTER -> masterId = line.substring(line.indexOf('=') + 1).toInt()
+                    FILE_ARIA_TOKEN -> ariaToken = line.substring(line.indexOf('=') + 1)
+                    FILE_ARIA_URL -> ariaURL = line.substring(line.indexOf('=') + 1)
+                    else -> continue
+                }
             }
         }
     }
