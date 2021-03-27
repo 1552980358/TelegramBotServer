@@ -243,6 +243,12 @@ fun loadDataFromFile(): Boolean {
         }
     }
 
+    if (targetDir.isNotEmpty()) {
+        if (!targetDir.endsWith('/') && !targetDir.endsWith('\\')) {
+            targetDir += File.separator
+        }
+    }
+
     if (token.isEmpty() || masterId == -1) {
         return false
     }
