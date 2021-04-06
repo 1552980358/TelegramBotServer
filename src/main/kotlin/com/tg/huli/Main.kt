@@ -3,6 +3,9 @@ package com.tg.huli
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tg.huli.Utils.Companion.fetchJarPath
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.jvm.keyword.tryCatch
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import java.io.File
@@ -158,12 +161,14 @@ fun main(args: Array<String>) {
             when (list.first()) {
                 COMMAND_TELEGRAPH -> {
                     sendMsg(url, userId, "Start downloading...")
-                    sendMsg(
-                        url,
-                        userId,
-                        if (downloadGraph(list[2], stringBuilder, list[1] == "1")) "$stringBuilder: Success"
-                        else "$stringBuilder: Failed"
-                    )
+                    GlobalScope.launch(Dispatchers.IO) {
+                        sendMsg(
+                            url,
+                            userId,
+                            if (downloadGraph(list[2], stringBuilder, list[1] == "1")) "$stringBuilder: Success"
+                            else "$stringBuilder: Failed"
+                        )
+                    }
                 }
                 COMMAND_ARIA -> {
                     when (list[1]) {
