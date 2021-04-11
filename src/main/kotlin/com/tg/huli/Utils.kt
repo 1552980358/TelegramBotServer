@@ -4,6 +4,8 @@ class Utils {
 
     companion object {
 
+        private const val MiB = 1048576
+
         fun fetchJarPath(): String {
             var path = this::class.java
                 .protectionDomain
@@ -19,6 +21,10 @@ class Utils {
                 return path.substring(0, path.lastIndexOf("/"))
             }
             return path.replace("target/classes/", "")
+        }
+
+        fun getAsMiB(string: String): Int {
+            return string.toInt() / MiB
         }
 
     }

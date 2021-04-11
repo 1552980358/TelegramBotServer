@@ -25,6 +25,8 @@ const val COMMAND_TELEGRAPH = "/telegraph"
 const val COMMAND_ARIA = "/aria"
 const val COMMAND_ARIA_STAT = "stat"
 const val COMMAND_ARIA_DOWNLOAD = "dl"
+const val COMMAND_STATUS = "/status"
+const val COMMAND_STATUS_ALL = "all"
 
 val jarPath = fetchJarPath()
 
@@ -69,6 +71,9 @@ fun main(args: Array<String>) {
     var userId = 0
 
     var updates: JsonObject
+
+    // Initialize of instance
+    getSystemStatus()
 
     val chatIdFile = File(FILE_CHAT_ID).apply {
         if (!exists()) {
@@ -179,6 +184,11 @@ fun main(args: Array<String>) {
                             sendMsg(url, userId, if (ariaDownload(list[2], stringBuilder)) "Aria2 added: $stringBuilder" else "Aria2 add failed")
                         }
                         else -> sendMsg(url, userId, "Unknown command")
+                    }
+                }
+                COMMAND_STATUS -> {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        sendMsg(url, userId, getSystemStatus().getUpdate())
                     }
                 }
                 else -> sendMsg(url, userId, "Unknown command")
